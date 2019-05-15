@@ -5,6 +5,8 @@ supports cross-referencing points raised by reviewers.
 
 See the ``review_reply.tex`` file for usage instructions.
 
+![screenshot](https://raw.githubusercontent.com/GjjvdBurg/LaTeXReviewReplyTemplate/master/.screenshot.png)
+
 ## Notes
 
 License: MIT (see LICENSE file)
