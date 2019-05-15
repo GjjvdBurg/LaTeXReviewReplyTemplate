@@ -1,0 +1,137 @@
+% Template for replying to reviewer comments
+%
+% Author: Gertjan van den Burg (https://gertjan.dev)
+% Source: https://github.com/GjjvdBurg/LaTeXReviewReplyTemplate
+% License: MIT
+% 
+% Command usage:
+%
+%  - Reply: complete answer to the point raised.
+%
+%  - Partial reply: partial answer to the point raised. More text may be 
+%    needed. Can also imply work on the paper that still has to be done.
+%
+%  - Todo reply: Used for discussion and/or sketching a reply.
+%
+%  - Need reply: Signals that a point needs to get a reply.
+%
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{geometry}
+\usepackage[most]{tcolorbox}
+
+% Colors
+\definecolor{lightgray}{rgb}{0.9, 0.9, 0.9}
+\definecolor{lightyellow}{rgb}{0.98,0.91,0.71}
+\definecolor{lightred}{rgb}{0.8,0.4,0.4}
+
+% Boxes
+\newtcolorbox{replybox}{colback=lightgray, grow to right by=-10mm, grow to 
+	left by=-10mm, boxrule=0pt, boxsep=0pt, breakable, before skip=10pt}
+\newtcolorbox{partialbox}{colback=lightyellow, grow to right by=-10mm, grow to 
+	left by=-10mm, boxrule=0pt, boxsep=0pt, breakable, before skip=10pt}
+\newtcolorbox{todobox}{colback=lightred, grow to right by=-10mm, grow to left 
+	by=-10mm, boxrule=0pt, boxsep=0pt, breakable, before skip=10pt}
+
+% Counters
+\newcounter{epntcnt}
+\newcounter{rpntcnt}
+\newcounter{revcnt}
+
+% Environments
+\newenvironment{reviewer}{%
+	\refstepcounter{revcnt}%
+	\setcounter{rpntcnt}{0}%
+	\section*{Reviewer \therevcnt}%
+}{}
+% Editor environment takes an optional argument
+\newenvironment{editor}[1][Editorial Decision]{%
+	\setcounter{epntcnt}{0}%
+	\section*{#1}%
+}{}
+
+% Reply Commands
+\newcommand{\reply}[1]{%
+	\begin{replybox}%
+		#1
+	\end{replybox}%
+}
+\newcommand{\partialreply}[1]{%
+	\begin{partialbox}%
+		Partial reply: \emph{#1}
+	\end{partialbox}%
+}
+\newcommand{\todoreply}[1]{%
+	\begin{todobox}%
+		Todo reply: \emph{#1}
+	\end{todobox}%
+}
+\newcommand{\needsreply}{%
+	\todoreply{This comment needs a reply.}%
+}
+
+% Point command differs depending on the environment
+\makeatletter
+\newcommand{\point}{%
+	\medskip\noindent%
+	\def\@tmp{editor}%
+	\ifx\@tmp\@currenvir \refstepcounter{epntcnt}\theepntcnt\textbf{.}  
+	\else%
+	\def\@tmp{reviewer}%
+	\ifx\@tmp\@currenvir \refstepcounter{rpntcnt}\therpntcnt\textbf{.}  
+	\else\fi\fi%
+}
+\makeatother
+
+% Renew the commands for the point counters to get the formatting we want in 
+% both the references and the item labels.
+\renewcommand{\therpntcnt}{\textbf{\textup{\therevcnt.\arabic{rpntcnt}}}}
+\renewcommand{\theepntcnt}{\textbf{\textup{E.\arabic{epntcnt}}}}
+
+\setlength\parindent{0pt}
+\newcommand{\bft}[1]{\mathbf{#1}}
+
+\title{Reply to Reviewer Comments}
+\author{John Doe}
+
+\begin{document}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore 
+eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt 
+in culpa qui officia deserunt mollit anim id est laborum.\\
+
+The Authors\\
+
+\today.
+
+\begin{editor}
+	% NOTE: Here you would put the editor comment verbatim after each 
+	% point that needs addressing, you can place your reply. The 
+	% \needsreply command is used to mark points that need reply while the 
+	% revision is in process
+	Some initial comments.
+
+	\point Wow what a nice paper
+	\reply{Thank you}
+
+	\point Please defend your arguments better.
+	\reply{\label{ed:defend} Done}
+
+	Other comment that doesn't need a reply.
+\end{editor}
+
+\begin{reviewer}
+	% Again, use \point and \reply where appropriate. Points can be 
+	% labelled and referenced using \label and \ref as usual.
+	This is a very interesting paper.
+
+	\point Arguments need to be defended better.
+	\reply{Fixed, see also our reply to comment \ref{ed:defend}.}
+
+	\point There's a typo on page 10.
+	\needsreply
+\end{reviewer}
+
+\end{document}
